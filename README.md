@@ -1,1 +1,1 @@
-# Programming-in-Scala
+# Programming in Scala, 3rd Edition
