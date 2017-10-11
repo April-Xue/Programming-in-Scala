@@ -6,5 +6,5 @@
 ### 12.5 traits as stackable modifications
 ### 12.6 why not multiple inheritance
 ### 12.7 to trait or not to trait
-### 12.8 小结
+### 12.8 CONCLUSION
 
