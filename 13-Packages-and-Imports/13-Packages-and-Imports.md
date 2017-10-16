@@ -122,7 +122,7 @@ For example, both launch and bobsrockets of Listing 13.6 are members of package 
 
 
 ## 13.3 IMPORTS
-在scala里面，package和它们的成员通过import被导入。访问时，可以简单地使用File，而不是需要java.io.File。如：
+在scala里，package和它们的成员通过import被导入。访问时，可以简单地使用File，而不是需要java.io.File。如：
 
 ```
 package bobsdelights
