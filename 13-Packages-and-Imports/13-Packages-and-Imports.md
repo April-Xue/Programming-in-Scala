@@ -408,8 +408,6 @@ Listing 13.14 - A package object.
 package将会被频繁使用，为了hold package-wide type aliases (Chapter 20) and implicit conversions (Chapter 21)。The top-level的scala package包含一个package object，里面的定义能被所有scala代码import。
 
 ## 13.7 CONCLUSION
-在这一章，介绍了基础的指导，如何将一个项目分解到package里，同时指导了面对大型代码工程时，如何模块化，每一个模块不用彼此强依赖。scala的package系统比java的更连贯和通用。
 
-之后，我们将在第29章介绍比package系统更灵活的系统，能够将代码分解到namespace里面，是的module能参数化，并且彼此之间可以继承。下一章，我们将介绍unit testing。
 
 
