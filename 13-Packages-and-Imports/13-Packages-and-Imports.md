@@ -169,7 +169,7 @@ Listing 13.8 - Importing the members of a regular (not singleton) object.
 showFruit导入参数fruit的所有member，即name和color，与fruit.name和fruit.color相同。这种写法，在需要把object作为module使用时，非常有效，将在Chapter 29介绍。
 
 **SCALA'S FLEXIBLE IMPORTS**
-scala的导入比java更灵活。有三点不同：
+scala导入比java更灵活。有三点不同：
 1、import可以出现在任何地方
 2、may refer to objects (singleton or regular) in addition to packages
 3、let you rename and hide some of the imported members
