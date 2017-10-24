@@ -122,7 +122,6 @@ For example, both launch and bobsrockets of Listing 13.6 are members of package 
 
 
 ## 13.3 IMPORTS
-在scala里，package和它们的成员通过import被导入。访问时，可以简单地使用File，而不是需要java.io.File。如：
 
 ```
 package bobsdelights
@@ -140,8 +139,6 @@ object Fruits {
 Listing 13.7 - Bob's delightful fruits, ready for import.
 ```
 
-import可以使package和object的member直接使用，而不用带上package和object的前缀，如：
-
 ```
 // easy access to Fruit 
 import bobsdelights.Fruit
@@ -153,11 +150,8 @@ import bobsdelights._
 import bobsdelights.Fruits._
 
 ```
-第一个类似于java的single type import。
-第二个类似于java的on-demand import，但是不是*，因为它是scala里的一个标识符。
-第三个类似于java的static class fields import。
 
-scala的import可以更进一步，import可以在任何地方出现，指向任何值，如：
+**imports in Scala can appear anywhere, they can also refer to arbitrary values.**   
 
 ```
 def showFruit(fruit: Fruit) = { 
@@ -166,15 +160,9 @@ def showFruit(fruit: Fruit) = {
 }
 Listing 13.8 - Importing the members of a regular (not singleton) object.
 ```
-showFruit导入参数fruit的所有member，即name和color，与fruit.name和fruit.color相同。这种写法，在需要把object作为module使用时，非常有效，将在Chapter 29介绍。
 
-**SCALA'S FLEXIBLE IMPORTS**
-scala导入比java更灵活。有三点不同：
-1、import可以出现在任何地方
-2、may refer to objects (singleton or regular) in addition to packages
-3、let you rename and hide some of the imported members
-
-另一个scala import的灵活性在于，可以导入package本身，而不仅仅他们的non-package member。java.util.regex这个package被导入后，可以直接使用regex.Pattern对Pattern这个singleton object进行访问，如：
+**SCALA'S FLEXIBLE IMPORTS**  
+**import packages themselves**  
 
 ```
 import java.util.regex
@@ -186,67 +174,63 @@ class AStarB {
 
 Listing 13.9 - Importing a package name.
 ```
-
-在scala的import里，可以进行重命名和隐藏member，即使用brace组成的selector，允许object里的哪些member被导入，如：
+**import Apple and Orange**  
 
 ```
 import Fruits.{Apple, Orange}
 从object Fruits导入Apple和Orange。
 ```
+**import Apple, Orange, rename Apple to McIntosh**  
 
 ```
 import Fruits.{Apple => McIntosh, Orange}
-Apple被重名为McIntosh，可以使用Fruits.Apple或McIntosh进行访问。
 ```
+**import sql.Date as SDate, can simultaneously import Java Date**  
 
 ```
 import java.sql.{Date => SDate}
-将sql的Date作为SDate导入，于是你可以同时导入java的Date进行使用。
 ```
+**import S, access list S.Date**  
+
+```
+import java.{sql => S}
+```
+**import all members**  
 
 ```
 import Fruits.{_}
-导入Fruits的所有member，与import Fruits._相同。
 ```
+**import all, but renames Apple to McIntosh**  
 
 ```
 import Fruits.{Apple => McIntosh, _}
-导入Fruits的所有member，同时将Apple重命名为McIntosh。
 ```
+**import all, except Pear**  
 
 ```
 import Fruits.{Pear => _, _}
-导入Fruits的所有member，除了Pear。或者说，将member重命名_，就是将其隐藏。
 ```
-这样子可以避免歧义，如Fruits和Notebooks里面都定义了class Apple，你只想导入一个，如下：
+**import Notebook.Apple, not the Fruits**  
 
 ```
 import Notebooks._ 
 import Fruits.{Apple => _, _}
 ```
 
-这些例子展示了scala巨大的灵活性，即导入members时可选择和可重命名。总结，一个import selector可由以下组成：
-1、简单的"x"。即导入x。
-2、重命名"x => y"。即将y作为x的导入名称进行使用。
-3、隐藏"x => _"。即排除x。
-4、全部导入"_"。
-
-需要提醒的是，"import p._"其实就是"import p.{_}"的简化，"import p.n"与 "import p.{n}"
-相同。
 
 ## 13.4 IMPLICIT IMPORTS
-scala对每一个项目都增加了一些隐式导入。如以下三个import自动被加入了".scala"结尾的文件：
+**the following three import clauses had been added to the top of every source file with extension ".scala"**  
 
 ```
 import java.lang._ // everything in the java.lang package 
 import scala._ // everything in the scala package 
 import Predef._ // everything in the Predef object
 ```
-java.lang package包含了标准的java类。由于被隐式导入，所以你可以直接使用Thread，而不用java.lang.Thread。
-同时scala package包含了scala的标准库，即一些通用class和object，同样地，你可以直接使用List，而不用scala.List。
-Predef object包含了很多type、method和隐式转换地定义，通常在scala项目中被广泛使用。你可以直接使用assert，而不用Predef.assert。
+**because of implicit import:**  
+**you can use Thread instead of java.lang.Thread**  
+**you can use List instead of scala.List**  
 
-这三个导入有一点特殊，后面的import会覆盖前一个。如，StringBuilder class在scala和java.lang package里面都有定义。由于覆盖作用，StringBuilder会指向scala.StringBuilder，而不是java.lang.StringBuilder。
+**because later import overshadow earlier ones, StringBuilder will be scala.StringBuilder, not java.lang.StringBuilder**  
 
 ## 13.5 ACCESS MODIFIERS
 package，class或object的member能使用private和protected进行修饰，这些access modifier限制了其在特定代码区域的访问。scala的access modifier与java相似，但略有不同。
