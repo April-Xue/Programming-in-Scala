@@ -1,6 +1,7 @@
 # 15-Case-Classes-and-Pattern-Matching
 
 ## 15.1 A SIMPLE EXAMPLE
+
 ## 15.2 KINDS OF PATTERNS
 ## 15.3 PATTERN GUARDS
 ## 15.4 PATTERN OVERLAPS
