@@ -7,7 +7,7 @@ First, lists are immutable. That is, elements of a list cannot be changed by ass
 Second, lists have a recursive structure (i.e., a linked list), whereas arrays are flat.
 
 ## 16.2 THE LIST TYPE
-lists are homogeneous: the elements of a list all have the same type.
+Lists are homogeneous: the elements of a list all have the same type.
 
 
 ```
@@ -241,9 +241,174 @@ scala> it.next res30: Char = b
 ```
 
 ## 16.7 HIGHER-ORDER METHODS ON CLASS LIST
-## 16.8 METHODS OF THE LIST OBJECT
-## 16.9 PROCESSING MULTIPLE LISTS TOGETHER
-## 16.10 UNDERSTANDING SCALA'S TYPE INFERENCE ALGORITHM
-## 16.11 CONCLUSION
+**Mapping over lists: map, flatMap and foreach**   
 
+```
+map
+scala> List(1, 2, 3) map (_ + 1) 
+res32: List[Int] = List(2, 3, 4)
+
+scala> val words = List("the", "quick", "brown", "fox") 
+words: List[String] = List(the, quick, brown, fox)
+
+scala> words map (_.length) 
+res33: List[Int] = List(3, 5, 5, 3)
+
+scala> words map (_.toList.reverse.mkString) 
+res34: List[String] = List(eht, kciuq, nworb, xof)
+
+flatmap
+It applies the function to each list element and returns the concatenation of all function results.
+scala> words map (_.toList) 
+res35: List[List[Char]] = List(List(t, h, e), List(q, u, i, c, k), List(b, r, o, w, n), List(f, o, x)) 
+scala> words flatMap (_.toList) 
+res36: List[Char] = List(t, h, e, q, u, i, c, k, b, r, o, w, n, f, o, x)
+
+foreach
+scala> var sum = 0 
+sum: Int = 0
+
+scala> List(1, 2, 3, 4, 5) foreach (sum += _)
+
+scala> sum 
+res39: Int = 15
+```
+
+**Filtering lists: filter, partition, find, takeWhile, dropWhile, and span**    
+
+```
+filter
+It yields the list of all elements x in xs for which p(x) is true
+scala> List(1, 2, 3, 4, 5) filter (_ % 2 == 0) 
+res40: List[Int] = List(2, 4)
+
+partition
+scala> List(1, 2, 3, 4, 5) partition (_ % 2 == 0) 
+res42: (List[Int], List[Int]) = (List(2, 4),List(1, 3, 5))
+
+find
+scala> List(1, 2, 3, 4, 5) find (_ % 2 == 0) 
+res43: Option[Int] = Some(2)
+
+takeWhile and dropWhile and span
+scala> List(1, 2, 3, -4, 5) takeWhile (_ > 0) 
+res45: List[Int] = List(1, 2, 3)
+
+scala> List(1, 2, 3, -4, 5) dropWhile (_ > 0)
+res3: List[Int] = List(-4, 5)
+
+scala> List(1, 2, 3, -4, 5) span (_ > 0) 
+res47: (List[Int], List[Int]) = (List(1, 2, 3),List(-4, 5))
+```
+
+**Predicates over lists: forall and exists**   
+
+```
+scala> List(0, 0, 0).forall(_ == 0)
+res14: Boolean = true
+
+scala> List(0, 0, 0).exists( _ == 1)
+res13: Boolean = false
+```
+
+**Folding lists: /: and :\**   
+
+```
+???
+```
+
+**Sorting lists: sortWith**   
+
+```
+scala> List(1, -3, 4, 2, 6) sortWith (_ < _) 
+res51: List[Int] = List(-3, 1, 2, 4, 6)
+
+scala> words sortWith (_.length > _.length) 
+res52: List[String] = List(quick, brown, the, fox)
+```
+## 16.8 METHODS OF THE LIST OBJECT
+All operations you have seen in early are implemented as methods of class List
+
+**Creating lists from their elements: List.apply**    
+
+```
+scala> List.apply(1, 2, 3) 
+res53: List[Int] = List(1, 2, 3)
+```
+
+**Creating a range of numbers: List.range**   
+
+```
+scala> List.range(1, 5) 
+res54: List[Int] = List(1, 2, 3, 4)
+
+scala> List.range(1, 9, 2) 
+res55: List[Int] = List(1, 3, 5, 7)
+
+scala> List.range(9, 1, -3) 
+res56: List[Int] = List(9, 6, 3)
+```
+
+**Creating uniform lists: List.fill**    
+
+```
+scala> List.fill(5)('a') 
+res57: List[Char] = List(a, a, a, a, a)
+
+scala> List.fill(3)("hello") 
+res58: List[String] = List(hello, hello, hello)
+
+scala> List.fill(2, 3)('b') 
+res59: List[List[Char]] = List(List(b, b, b), List(b, b, b))
+```
+
+**Tabulating a function: List.tabulate**    
+
+```
+scala> val squares = List.tabulate(5)(n => n * n) 
+squares: List[Int] = List(0, 1, 4, 9, 16) 
+scala> val multiplication = List.tabulate(5,5)(_ * _) 
+multiplication: List[List[Int]] = List(List(0, 0, 0, 0, 0),
+                                        List(0, 1, 2, 3, 4), 
+                                        List(0, 2, 4, 6, 8),
+                                        List(0, 3, 6, 9, 12), 
+                                        List(0, 4, 8, 12, 16))
+it's like cartesian product
+0, 1, 2, 3, 4
+0, 1, 2, 3, 4
+```
+
+**Concatenating multiple lists: List.concat**   
+
+```
+scala> List.concat(List('a', 'b'), List('c')) 
+res60: List[Char] = List(a, b, c)
+
+scala> List.concat(List(), List('b'), List('c')) 
+res61: List[Char] = List(b, c)
+
+scala> List.concat() 
+res62: List[Nothing] = List()
+```
+
+## 16.9 PROCESSING MULTIPLE LISTS TOGETHER
+
+```
+scala> (List(10, 20), List(3, 4, 5)).zipped.map(_ * _) 
+res63: List[Int] = List(30, 80)
+
+scala> (List(10, 20, 50), List(3, 4)).zipped.map(_ * _)
+res27: List[Int] = List(30, 80)
+
+scala> (List("abc", "de"), List(3, 2)).zipped.exists(_.length != _) 
+res65: Boolean = false
+```
+So, you can zip two lists and then, use map, flatMap...
+
+## 16.10 UNDERSTANDING SCALA'S TYPE INFERENCE ALGORITHM
+Too complicated, not interested in.
+
+
+## 16.11 CONCLUSION
+Lists are a real work horse in Scala.
 
