@@ -1,11 +1,9 @@
 # 7-Built-in-Control-Structures.md
+The only control structures are if,while, for, try, match, and function calls.
 
-目前scala内置的控制结构有：if，while，for，try，match和function calls，非常的少，因为与其基于基础语法一个个添加控制结构，scala直接将它们集成在类库里(Chapter 9 会详细介绍)，本章将仅介绍几个内置控制结构。
 
-scala的控制结构都有返回值，这是函数式语言的特色，在命令式语言里也有类似，如三元操作符?:，scala里则为if。
 
-### 7.1 if expressions
-与其他语言类似，scala的if如：
+### 7.1 IF EXPRESSIONS
 
 ```
 var filename = "default.txt" 
@@ -13,27 +11,17 @@ if (!args.isEmpty)
     filename = args(0)
 ```
 
-由于scala的if有返回值，所以可以改写filename的初始化。
-
 ```
+Scala's if is an expression that results in a value.
 val filename =
-    if (!args.isEmpty) 
-        args(0) 
-    else 
-        "default.txt"
+    if (!args.isEmpty) args(0) 
+    else "default.txt"
 ```
-
-这种写法的优点有两个：
-1、通过返回值将filename定义为val，使用val是函数式风格，与java中的final一样，这样能让读者清楚的知道filename不会被改变，而不是查找全文看filename什么时候被改变。
-2、通过返回值，可以直接使用表达式来代替变量，如：
-
-```
-println(if (!args.isEmpty) args(0) else "default.txt")
-```
+Using a val is the functional style.
 
 
-### 7.2 while loops
-与其他语言类似，scala的while如：
+### 7.2 WHILE LOOPS
+while
 
 ```
 def gcdLoop(x: Long, y: Long): Long = { 
@@ -48,7 +36,7 @@ def gcdLoop(x: Long, y: Long): Long = {
 }
 ```
 
-do-while如：
+do-while
 
 ```
 var line = "" 
@@ -58,8 +46,10 @@ do {
 } while (line != "")
 ```
 
-while和do-while结构称为循环，不是表达式，因为没有返回具体值，而是类型为Unit的空值，写作()。
-()的示范如下：
+The while and do-while constructs are called "loops," not expressions,  
+because they don't result in an interesting value. The type of the result is Unit.
+
+Unit is called the unit value and is written ().
 
 ```
 scala> def greet() = { println("hi") } 
@@ -69,8 +59,7 @@ scala> () == greet()
 hi 
 res0: Boolean = true
 ```
-
-特别注意空值的使用，以下为错误示范：
+In Scala assignment always results in the unit value, ().
 
 ```
 var line = "" 
@@ -78,70 +67,49 @@ while ((line = readLine()) != "") // This doesn't work!
     println("Read: " + line)
 ```
 
-由于"line = readLine()"返回总是为()，所以不等于""，与java中不同。
-
-以下两段代码实现相同功能，相比之下递归不易理解，但是使用while循环会不断重新赋值，所以需要对代码进行更多推敲验证。
-
-```
-def gcdLoop(x: Long, y: Long): Long = { 
-    var a = x 
-    var b = y 
-    while (a != 0) { 
-        val temp = a 
-        a = b % a 
-        b = temp 
-    } 
-    b
-}
-
-def gcd(x: Long, y: Long): Long = 
-    if (y == 0) x else gcd(y, x % y)
-```
-
-### 7.3 for expressions
-**collections迭代**
-如：
+### 7.3 FOR EXPRESSIONS
+**Iteration through collections**
 
 ```
 val filesHere = (new java.io.File(".")).listFiles
 for (file <- filesHere) 
     println(file)
-```
 
-每一次迭代，重新初始化一个名为file的val值，因为filesHere为Array[File]，所以file类型为File，println(file)时，会自动调用File的toString方法。在scala里，不应该写成这样：
+With the "file <- filesHere" syntax, which is called a generator.
+In each iteration, a new val named file is initialized with an element value.
+```
 
 ```
 // Not common in Scala...
 for (i <- 0 to filesHere.length - 1) 
     println(filesHere(i))
-```
-这种写法总是会纠结于边界问题，应该完全避免。
-
-for循环简单示例：
-
-```
-for (i <- 1 to 4) //含边界
+    
+//include upper bound
+for (i <- 1 to 4) 
     println("Iteration " + i) 
 Iteration 1 
 Iteration 2 
 Iteration 3 
 Iteration 4
 
-for (i <- 1 until 4) //不含边界
+//not include upper bound
+for (i <- 1 until 4) 
     println("Iteration " + i) 
 Iteration 1 
 Iteration 2 
 Iteration 3
 ```
 
-**筛选**
+**Filtering**
 
 ```
+for (file <- filesHere)
+    if (file.getName.endsWith(".scala")) 
+        println(file)     
+
 for (file <- filesHere if file.getName.endsWith(".scala")) 
     println(file)
-```
-
-```
+    
 for ( 
     file <- filesHere 
     if file.isFile 
@@ -149,7 +117,7 @@ for (
 ) println(file)
 ```
 
-**嵌套循环**
+**Nested iteration**
 
 ```
 def grep(pattern: String) =
@@ -160,7 +128,8 @@ def grep(pattern: String) =
         if line.trim.matches(pattern) 
     ) println(file + ": " + line.trim)
 
-这里必须写分号，不然只能将圆括号替换成花括号：
+you can use curly braces instead of parentheses,
+by doing so, you can leave off some of the semicolons.
 def grep(pattern: String) =
     for {
       file <- filesHere
@@ -170,10 +139,10 @@ def grep(pattern: String) =
     } println(file + ": " + line.trim)
 
 ```
-
-**绑定中间变量**
+**Mid-stream variable bindings**
 
 ```
+The bound variable trimmed just like a val, only with the val keyword left out.
 def grep(pattern: String) =
 for { 
     file <- filesHere 
@@ -183,30 +152,21 @@ for {
     if trimmed.matches(pattern) 
 } println(file + ": " + trimmed)
 ```
-**生成新collection**
+**Producing a new collection**
 
 ```
-val filesHere = (new java.io.File(".")).listFiles
-for (file <- filesHere)
-    println(file)
-for (file <- filesHere if file.getName.endsWith(".scala"))
-    println(file)
-  //
-def fileLines(file: java.io.File) =
-    scala.io.Source.fromFile(file).getLines().toList
-val forLineLengths =
-    for {
-      file <- filesHere
-      if file.getName.endsWith(".scala")
-      line <- fileLines(file)
-      trimmed = line.trim
-      if trimmed.matches(".*for.*")
-    } yield trimmed.length
-```
-在Chapter 23将对for循环进行详细描述。
+The syntax of a for-yield expression is like this:
+for clauses yield body
 
-### 7.4 exception handling with try expressions
-**抛出异常**
+for (file <- filesHere if file.getName.endsWith(".scala")) { 
+    yield file // Syntax error!
+}
+Even if the body is a block surrounded by curly braces, 
+put the yield before the first curly brace
+```
+
+### 7.4 EXCEPTION HANDLING WITH TRY EXPRESSIONS
+**Throwing exceptions**
 
 ```
 val half =
@@ -215,9 +175,9 @@ val half =
     else
         throw new RuntimeException("n must be even")
 ```
-异常has type Nothing，将会在Section 11.3中介绍。
+An exception throw has type Nothing.
 
-**捕获异常**
+**Catching exceptions**
 
 ```
 import java.io.FileReader 
@@ -232,10 +192,11 @@ catch {
     case ex: FileNotFoundException => // Handle missing file 
     case ex: IOException => // Handle other I/O error 
 }
+each catch clause is tried in turn.
 ```
-在scala里，并不用声明异常，可以直接使用
 
-**finally**
+**The finally clause**  
+With a finally clause if you want to cause some code to execute no matter how the expression terminates.
 
 ```
 val file = new FileReader("input.txt") 
@@ -245,30 +206,37 @@ val file = new FileReader("input.txt")
         file.close() // Be sure to close the file 
 }
 ```
-使用finally，确保non-memory资源，如file，socket，database connectio被关闭。另外使用loan pattern可以更简洁，将会在Section 9.3中介绍。
 
-**返回一个值**
+**Yielding a value**  
+try-catch-finally results in a value.
 
 ```
 def urlFor(path: String) =
 try { 
     new URL(path) 
-} 
-catch {
+} catch {
     case e: MalformedURLException =>
         new URL("http://www.scala-lang.org") 
 }
+no exception, result = try clause
+throw exception, result = catch clause
 ```
-返回值为try中url，或exception抛出时catch中url，如果抛出exception时没有捕获，将没有返回值。
+If an exception is thrown but not caught, the expression has no result.
 
 ```
+if a finally clause includes an explicit return statement, or throws an exception, 
+that return value or exception will "overrule" any previous one 
+that originated in the try block or one of its catch clauses.
+
 def f(): Int = try return 1 finally return 2
-返回2，finally的return，会使try和catch里的值失效
+results in 2
 def g(): Int = try 1 finally 2
-返回1
+results in 1
+
+it's usually best to avoid returning values from finally clauses
 ```
 
-### 7.5 match expressions
+### 7.5 MATCH EXPRESSIONS
 
 ```
 val firstArg = if (args.length > 0) args(0) else ""
@@ -278,10 +246,10 @@ firstArg match {
     case "eggs" => println("bacon") 
     case _ => println("huh?") 
 }
+The default case is specified with an underscore (_), 
+a wildcard symbol frequently used in Scala as a placeholder for a completely unknown value.
 ```
-默认case是_，下划线是一个通配符，作为表达未知值的占位符，在scala被频繁使用。
-并不用写break，其作为隐式存在。
-与java最大的区别在于，scala的match可以有返回值，如：
+There are no breaks at the end of each alternative, Instead the break is implicit.
 
 ```
 val firstArg = if (!args.isEmpty) args(0) else ""
@@ -294,10 +262,9 @@ val friend =
     }
 println(friend)
 ```
+Match expressions result in a value.
 
-### 7.6 living without break and continue
-
-java写法：
+### 7.6 LIVING WITHOUT BREAK AND CONTINUE
 
 ```
 int i = 0; 
@@ -315,7 +282,7 @@ while (i < args.length) {
     i = i + 1;
 }
 ```
-scala中，尽量使用if替代continue，布尔值替代break，如：
+Better to replace every continue by an if and every break by a boolean variable.
 
 ```
 var i = 0 
@@ -328,7 +295,7 @@ while (i < args.length && !foundIt) {
     i = i + 1 
 }
 ```
-其实用递归函数是最容易理解的：
+Another way is rewriting the loop as a recursive function.
 
 ```
 def searchFrom(i: Int): Int =
@@ -339,7 +306,7 @@ def searchFrom(i: Int): Int =
 
 val i = searchFrom(0)
 ```
-如果非要使用break，scala提供了以下写法：
+Class Breaks in package scala.util.control offers a break method, which can be used to exit an enclosing block that's marked with breakable.
 
 ```
 import scala.util.control.Breaks._ 
@@ -355,34 +322,16 @@ breakable {
     } 
 }
 ```
+The Breaks class implements break by throwing an exception that is caught by an enclosing application of the breakable method.
 
-
-### 7.7 viriable scope
-
-```
-def printMultiTable() = {
-    var i = 1 // only i in scope here
-    while (i <= 10) {
-        var j = 1 // both i and j in scope here
-        while (j <= 10) {
-            val prod = (i * j).toString // i, j, and prod in scope here
-            var k = prod.length // i, j, prod, and k in scope here
-            while (k < 4) {
-                print(" ")
-                k += 1
-            }
-            print(prod)
-            j += 1
-        }
-        // i and j still in scope; prod and k out of scope
-        println()
-        i += 1
-    }
-    // i still in scope; j, prod, and k out of scope
-}
-```
+### 7.7 VARIABLE SCOPE
+Curly braces generally introduce a newscope.
 
 ```
+val a = 1 
+val a = 2 // Does not compile 
+println(a)
+
 val a = 1; 
 {
     val a = 2 // Compiles just fine
@@ -390,7 +339,6 @@ val a = 1;
 } 
 println(a)
 ```
-打印2然后打印1。使用花括号，可以定义，定义过的相同名字的变量。但是易读性差，不建议这么写。
 
 ### 7.8 refactoring imperative-style code
 
@@ -416,7 +364,7 @@ def printMultiTable() = {
     // i still in scope; j, prod, and k out of scope
 }
 ```
-改写为：
+rewrite：
 
 ```
 // Returns a row as a sequence 
@@ -438,12 +386,13 @@ def multiTable() = {
     tableSeq.mkString("\n")
 }
 ```
-当使用while循环，由于输出到标准输出，会有side effect。重构成函数式代码后，最终返回string，对string进行输出，将逻辑和输出分开，有利于单元测试。
+side-effect-free functions is easier to unit test.
 
-尽量不要使用while和var，函数式编程中通常使用val，for，helper function。
+imperative style: while and vars
+function style: vals, for, helper functions and mkString.
 
 
 ### 7.9 小结
-scala内置的控制结构非常简洁，由于有返回值，所以很符合函数式编程，而且可以与function literal很好结合，下一章将介绍。
+Skipped
 
 
