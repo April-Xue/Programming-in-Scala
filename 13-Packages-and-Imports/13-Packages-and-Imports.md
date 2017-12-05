@@ -8,8 +8,6 @@ by putting a package clause at the top of the file.
 ```
 package bobsrockets.navigation 
 class Navigator
-
-Listing 13.1 - Placing the contents of an entire file into a package.
 ```
 
 You can place code into packages.  
@@ -19,8 +17,6 @@ This syntax is called a packaging.
 package bobsrockets.navigation { 
     class Navigator 
 }
-
-Listing 13.2 - Long form of a simple package declaration.
 ```
 
 You can have different parts of a file in different packages.
@@ -36,8 +32,6 @@ package bobsrockets {
         }
     }
 }
-
-Listing 13.3 - Multiple packages in the same file.
 ```
 
 ```
@@ -60,8 +54,6 @@ package bobsrockets {
         } 
     }
 }
-
-Listing 13.4 - Concise access to classes and packages.
 ```
 
 ```
@@ -75,8 +67,6 @@ package bobsrockets.fleets {
        def addShip() = { new Ship } 
     }
 }
-
-Listing 13.5 - Symbols in enclosing packages not automatically available.
 ```
 
 ```
@@ -100,8 +90,6 @@ package bobsrockets {
         class Booster2 
     }
 }
-
-Listing 13.6 - Accessing hidden package names.
 ```
 ## 13.2 CONCISE ACCESS TO RELATED CODE
 
@@ -116,10 +104,10 @@ class Fleet {
 ```
 
 Scala provides a package named "_root_" that is outside any package.  
+
 Every top-level package is treated as a member of package "_root_".  
+
 For example, both launch and bobsrockets of Listing 13.6 are members of package "_root_".
-
-
 
 ## 13.3 IMPORTS
 
@@ -136,7 +124,6 @@ object Fruits {
     object Pear extends Fruit("pear", "yellowish") 
     val menu = List(Apple, Orange, Pear) 
 }
-Listing 13.7 - Bob's delightful fruits, ready for import.
 ```
 
 ```
@@ -148,7 +135,6 @@ import bobsdelights._
 
 // easy access to all members of Fruits 
 import bobsdelights.Fruits._
-
 ```
 
 imports in Scala can appear anywhere, they can also refer to arbitrary values.   
@@ -158,7 +144,6 @@ def showFruit(fruit: Fruit) = {
     import fruit._ 
     println(name + "s are " + color) 
 }
-Listing 13.8 - Importing the members of a regular (not singleton) object.
 ```
 
 **SCALA'S FLEXIBLE IMPORTS**  
@@ -171,8 +156,6 @@ class AStarB {
     // Accesses java.util.regex.Pattern 
     val pat = regex.Pattern.compile("a*b") 
 }
-
-Listing 13.9 - Importing a package name.
 ```
 import Apple and Orange  
 
@@ -230,7 +213,8 @@ because of implicit import:
 you can use Thread instead of java.lang.Thread  
 you can use List instead of scala.List  
 
-because later import overshadow earlier ones, StringBuilder will be scala.StringBuilder, not java.lang.StringBuilder  
+because later import overshadow earlier ones, StringBuilder will be scala.StringBuilder,  
+not java.lang.StringBuilder  
 
 ## 13.5 ACCESS MODIFIERS
 Scala's treatment of access modifiers roughly follows Java's but there are some important differences  
@@ -247,7 +231,6 @@ class Outer {
     } 
     (new Inner).f() // error: f is not accessible 
 }
-Listing 13.10 - How private access differs in Scala and Java.
 ```
 A member labeled private is visible only inside the class or object that contains the member definition.  
 It also applies to inner class, but java lets an outer class access private members of its inner classes  
@@ -266,14 +249,17 @@ package p {
         (new Super).f() // error: f is not accessible 
     }
 }
-
-Listing 13.11 - How protected access differs in Scala and Java.
 ```
 In Scala, a protected member is only accessible from subclasses of the class  
 In Java, a protected member can be accessed from other classes in the same package
 
 **Public members**  
-Any member not labeled private orprotected is public  
+Any member not labeled private orprotected is public.
+
+**Scope of protection**  
+A modifier of the form private[X] or protected[X] means that 
+access is private or protected "up to" X, 
+where X designates some enclosing package, class or singleton object.
 
 ```
 package bobsrockets
@@ -293,17 +279,19 @@ package launch {
         private[launch] val guide = new Navigator 
     } 
 }
-
-Listing 13.12 - Flexible scope of protection with access qualifiers.
 ```
-**Scope of protection**  
-......
+A definition labeled private[this] is accessible only from within the same object that contains the definition.
 
+**Visibility and companion objects**  
+In Scala there are no static members, instead you can have a companion object that contains members that exist only once.
 
+A class shares all its access rights with its companion object and vice versa.
 
 ## 13.6 PACKAGE OBJECTS
-you can put classes, traits, and standalone objects into packages  
-you can also put method into package by using package object  
+You can put classes, traits, and standalone objects into packages.
+
+You can also put method into package by using package object.
+
 Package objects are frequently used to hold package-wide type aliases and implicit conversions.  
 
 ```
@@ -327,13 +315,9 @@ object PrintMenu {
         } 
     } 
 }
-
-Listing 13.14 - A package object.
 ```
 
-
-
 ## 13.7 CONCLUSION
-
+Skipped
 
 
