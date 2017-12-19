@@ -100,7 +100,8 @@ package bobsrockets
 package fleets 
 class Fleet {
     // No need to say bobsrockets.Ship
-    def addShip() = { new Ship } }
+    def addShip() = { new Ship } 
+}
 ```
 
 Scala provides a package named "_root_" that is outside any package.  
@@ -161,7 +162,6 @@ import Apple and Orange
 
 ```
 import Fruits.{Apple, Orange}
-从object Fruits导入Apple和Orange。
 ```
 import Apple, Orange, rename Apple to McIntosh  
 
